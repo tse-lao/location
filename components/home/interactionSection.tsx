@@ -1,23 +1,23 @@
 import React from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 
 export default function InteractionSection() {
   return (
-    <View className="bg-white rounded-md p-3  flex-2 ">
+    <View style={styles.container}>
       <View>
-        <Text className="font-medium text-lg">Connects</Text>
-        <Text className="text-sm text-gray-500">Last 2w ago</Text>
-        <ScrollView className="h-[200] mt-4 divide-y-8">
-            <Text>
+        <Text style={styles.header}>Connects</Text>
+        <Text style={styles.subHeader}>Last 2w ago</Text>
+        <ScrollView style={styles.scrollView}>
+            <Text style={styles.listText}>
                 Here will be a list of connects
             </Text>
-            <Text>
+            <Text style={styles.listText}>
                 Here will be a list of connects
             </Text>
-            <Text>
+            <Text style={styles.listText}>
                 Here will be a list of connects
             </Text>
-            <Text>
+            <Text style={styles.listText}>
                 Here will be a list of connects
             </Text>
         </ScrollView>
@@ -25,3 +25,31 @@ export default function InteractionSection() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    borderRadius: 4, // adjusted value to be more suitable for React Native
+    padding: 3,
+    flex: 2
+  },
+  header: {
+    fontWeight: '500',  // medium font weight
+    fontSize: 16        // large text size
+  },
+  subHeader: {
+    fontSize: 14,       // small text size
+    color: 'gray'       // gray text color
+  },
+  scrollView: {
+    height: 200,
+    marginTop: 4
+  },
+  listText: {
+    // styles for the list of connects
+    // Note: divide-y-8 (from TailwindCSS) isn't directly translatable to React Native. 
+    // You would typically use borderBottomWidth or a separate View to create divisions.
+    borderBottomWidth: 1,  // example of how you might translate divide-y
+    borderColor: 'gray'    // using gray as the border color
+  }
+});

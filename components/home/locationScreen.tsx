@@ -1,53 +1,50 @@
 import { Link } from "expo-router";
 import { StyleSheet, Text, View } from "react-native";
 
-
-
 export default function LocationScreen() {
   return (
-
-      <View className="rounded-md bg-white flex flex-row p-3 m-4" >
-            <View className="flex-1  gap-2 p-4">
-                <Text style={styles.locationTitle}>Find assets around you</Text>
-                <View className="px-4 py-2 font-sm rounded-md font-bold bg-green-300">
-                    <Link href="/(tabs)/maps" >
-                    Explore
-                    </Link>
-                    
-                </View>
-            </View>
-            <View className="flex-1">
-                <Text>Here will be an image placed</Text>
-            </View>
+    <View style={styles.locationBox}>
+      <View style={styles.rowItem}>
+        <Text style={styles.locationTitle}>Find assets around you</Text>
+        <View style={styles.exploreButtonContainer}>
+          <Link style={styles.exploreButton} href="/(tabs)/maps">
+            Explore
+          </Link>
         </View>
+      </View>
+      <View style={styles.rowItem}>
+        <Text>Here will be an image placed</Text>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-
-  
-  
   locationBox: {
     backgroundColor: "white",
-    height: 100,  
     borderRadius: 8,
     padding: 12,
-    display: "flex",
     flexDirection: "row",
+    margin: 4,
   },
-  exploreButton: {
-    borderRadius: 12, 
-    fontSize: 12, 
-  }, 
+  rowItem: {
+    flex: 1,
+    padding: 4,
+  },
   locationTitle: {
     fontSize: 16,
     fontWeight: "bold",
-    },
-    
-    rowItem: {
-        flex: 1, 
-        padding: 1, 
-    },
-   
-
+    marginBottom: 8, // gap equivalent
+  },
+  exploreButtonContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: "#4CAF50", // Rough equivalent for bg-green-300 from TailwindCSS
+    borderRadius: 8,
+  },
+  exploreButton: {
+    fontSize: 12,
+    fontWeight: "bold",
+    textAlign: "center", // To center the text inside the Link
+  },
 });

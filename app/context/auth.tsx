@@ -1,11 +1,10 @@
-import { RlyMumbaiNetwork, createAccount, getAccount } from '@rly-network/mobile-sdk';
+import { RlyMumbaiNetwork, createAccount, getAccount, getAccountPhrase } from '@rly-network/mobile-sdk';
+import { Wallet } from 'ethers';
 import { useRootNavigation, useRouter, useSegments } from 'expo-router';
 import React, { useContext, useEffect, useState } from 'react';
 const rlyNetwork = RlyMumbaiNetwork;
 rlyNetwork.setApiKey("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjEwMX0.h1avIemeKU-1Xbjp7nkdhF1-59C6jY4Im3GBiQa6OP0F3v3j-8fVQI2Fbu703H5mSYX52sGCAg8VcpCfjY5zLg")
-
 const AuthContext = React.createContext(null);
-
 // This hook can be used to access the user info.
 export const useAuth = () => {
   const authContext = useContext(AuthContext);
@@ -45,6 +44,7 @@ interface ProviderProps {
 interface User {  
   address: string;
   balance: number;
+  wallet:any;
   
 }
 
@@ -117,10 +117,17 @@ export function Provider(props: ProviderProps) {
     const account = await createAccount();
     console.log(account);
     await rlyNetwork.claimRly()
-    const balance = await rlyNetwork.getBalance()
+    const balance = await rlyNetwork.getBalance() 
+    
+    const mnemonic = await getAccountPhrase() as any;
+
+const wallet = Wallet.fromPhrase(mnemonic) as any;
+    
+    //getting the signer 
     setAuth({
       address: account,
-      balance: balance
+      balance: balance, 
+      wallet: wallet
     })
   }
   
@@ -133,9 +140,14 @@ export function Provider(props: ProviderProps) {
     };
     console.log(account);
     const balance = await rlyNetwork.getBalance()
+    const mnemonic = await getAccountPhrase() as any;
+
+const wallet = Wallet.fromPhrase(mnemonic);
+    
     setAuth({
       address: account,
-      balance: balance
+      balance: balance, 
+      wallet: wallet
     })
   }
   

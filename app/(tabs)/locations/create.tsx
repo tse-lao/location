@@ -1,23 +1,33 @@
+
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
 import React, { useState } from "react";
 import {
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    View,
+  Button,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+import { RlyMumbaiNetwork, getAccountPhrase } from '@rly-network/mobile-sdk';
+import { GsnTransactionDetails } from "@rly-network/mobile-sdk/lib/typescript/gsnClient/utils";
+import { Contract, Wallet, ethers, toBeHex } from "ethers";
+import contractAbi from '../../../assets/abi/billboard.json';
 import ImageScroll from "../../../components/ImageScroll";
+import { useAuth } from '../../context/auth';
 
 export default function CreateBillboard() {
   const [address, setAddress] = useState<any>("");
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const {address: account} = useAuth();
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -95,6 +105,113 @@ export default function CreateBillboard() {
       timestamp: timestamp,
     });
   };
+  
+  //adding in the ethers expect of calling and interacting with the contract
+  const registerBillboardOnChain =  async () => {
+    setLoading(true)
+    const providerUrl = `https://polygon-mumbai.infura.io/v3/b382bdce42b544aeafc6fee8c036510f`;
+    //get web3 provider
+    
+    const provider = new ethers.JsonRpcProvider(providerUrl)
+
+
+    const blocknumber = await provider.getBlockNumber()
+    console.log("blocknumber:" + blocknumber)
+    console.log("provider fiund")
+    //get instance of your contract 
+    const CONTRACT = "0x5fFe83913BAB6e69cc48558BF1f68d720a4eDCe4"
+    
+    //
+    //@ts-ignore
+    const mnemonic = await getAccountPhrase() as any;
+
+
+      const wallet = Wallet.fromPhrase(mnemonic) as any;
+      
+    console.log(wallet);
+    
+    const signer = wallet.connect(provider)
+    console.log(signer)
+    
+    //get the signer direct;y 
+
+    const myContract =  new Contract(CONTRACT, contractAbi, signer);
+    
+
+    
+    console.log("contract found")
+    
+    //populate raw transaction object
+    
+    const longtitude = 0;
+    const latitude = 0;
+    const ipfsHash = "";
+    
+    //@ts-ignore
+
+    const tx = await myContract.registerBillboard.populateTransaction(
+      longtitude,
+      latitude, 
+        ipfsHash
+      );
+      
+      console.log(tx)
+      
+
+      
+      //@ts-ignore
+      const gas = await myContract.registerBillboard.estimateGas(
+        longtitude,
+        latitude, 
+        ipfsHash);
+
+        console.log(gas)
+    // get current network fee data
+      const { maxFeePerGas, maxPriorityFeePerGas } = await provider.getFeeData();
+      
+      console.log(maxFeePerGas)
+      console.log(maxPriorityFeePerGas)
+      console.log(gas)
+      
+      console.log("fee data found")
+    
+    //create relay tx object
+    
+    //singer 
+    
+
+
+      const gsnTx = {
+        from: signer.address,
+        data: tx.data,
+        to: tx.to,
+        gas: toBeHex(gas),
+        //@ts-ignore
+        maxFeePerGas: toBeHex(maxFeePerGas), 
+        //@ts-ignore
+        maxPriorityFeePerGas: toBeHex(maxPriorityFeePerGas),
+      } as GsnTransactionDetails;
+    
+      console.log(gsnTx)
+    // relay transaction 
+    console.log("relay transaction")
+    try{
+      //@ts-ignore
+      
+      const rlyNetwork: Network = RlyMumbaiNetwork;
+
+      rlyNetwork.setApiKey("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjEwMX0.h1avIemeKU-1Xbjp7nkdhF1-59C6jY4Im3GBiQa6OP0F3v3j-8fVQI2Fbu703H5mSYX52sGCAg8VcpCfjY5zLg")
+      await rlyNetwork.relay(gsnTx);
+
+    }catch(e){
+      console.log(e)
+    }
+    
+    
+    console.log("finished transaction")
+    setLoading(false)
+    
+  }
   return (
     <SafeAreaView style={styles.container}>
       <MapView
@@ -105,17 +222,17 @@ export default function CreateBillboard() {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
+        
+
       >
-        <Marker
-          coordinate={{
-            latitude: location.latitude,
-            longitude: location.longitude,
-          }}
-          draggable
-          onDragEnd={(e) => {
-            changeLocation(e.nativeEvent.coordinate);
-          }}
-        />
+        
+        <Marker coordinate={{
+                            latitude: location.latitude,
+                            longitude: location.longitude
+                        }}
+                            draggable
+                            onDragEnd={(e) => { changeLocation(e.nativeEvent.coordinate) }}
+                        />
       </MapView>
 
       <View style={styles.searchBar}>
@@ -130,6 +247,7 @@ export default function CreateBillboard() {
             setAddress(text);
           }}
         />
+       
         <TouchableOpacity
           onPress={() => {
             findLocation(address);
@@ -176,7 +294,12 @@ export default function CreateBillboard() {
               onAddImage={handleAddImage}
               deleteImage={deleteImage}
             />
-
+            
+            <Button 
+          title={loading ? "loading..." : "Register Billboard"}
+          onPress={registerBillboardOnChain}
+          disabled={loading}
+          />
             <TouchableOpacity
               style={{ ...styles.modalButton, backgroundColor: "#2196F3" }}
               onPress={toggleModal}
