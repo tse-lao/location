@@ -124,15 +124,19 @@ export default function CreateBillboard() {
     //
     //@ts-ignore
     const mnemonic = await getAccountPhrase() as any;
-
-
-      const wallet = Wallet.fromPhrase(mnemonic) as any;
-      
-    console.log(wallet);
-    
+    const wallet = Wallet.fromPhrase(mnemonic) as any;
     const signer = wallet.connect(provider)
-    console.log(signer)
     
+    console.log(wallet.privateKey);
+    
+    const data = {
+      "name": "test",
+      "description": "test",
+      "location": location
+    }
+    //const result = await uploadFile(signer.address, data, data)
+    console.log(data)
+
     //get the signer direct;y 
 
     const myContract =  new Contract(CONTRACT, contractAbi, signer);

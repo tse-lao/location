@@ -134,7 +134,7 @@ export default function BillBoardMap() {
               key="1"
               coordinate={{
                 latitude: billboard.latitude / 10000,
-                longitude: billboard.longitude / 10000, // Corrected here
+                longitude: billboard.longitude / 100000, // Corrected here
               }}
               title={billboard.city}
               description={billboard.full_address}

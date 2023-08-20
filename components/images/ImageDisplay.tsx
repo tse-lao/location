@@ -9,7 +9,7 @@ const windowHeight = Dimensions.get('window').height;
 export default function ImageDisplay({ images }: { images: string[] }){
     const [isFullscreen, setIsFullscreen] = useState(false);
   return (
-    <ScrollView horizontal style={isFullscreen ? styles.fullscreenContainer : styles.fullscreenContainer}  contentContainerStyle={isFullscreen ? styles.fullscreenContainer : styles.contentContainer}>
+    <ScrollView horizontal style={isFullscreen ? styles.fullscreenContainer : styles.container}  contentContainerStyle={isFullscreen ? styles.fullscreenContainer : styles.contentContainer}>
       {images.map((image, index) => (
         <TouchableOpacity 
         style={styles.imageContainer}
@@ -24,6 +24,9 @@ export default function ImageDisplay({ images }: { images: string[] }){
 };
 
 const styles = StyleSheet.create({
+  container: {
+    height: 200,
+  }, 
   contentContainer: {
     flexDirection: 'row',
     alignItems: 'center',

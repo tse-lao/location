@@ -10,7 +10,7 @@ const style = {
   };
 export default function LoadingScreen() {
   return (
-    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+    <View style={{justifyContent:'center', alignItems:'center'}}>
       <LottieView source={json} autoPlay loop style={style}/>
     </View>
 
