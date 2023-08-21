@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import InteractionSection from "../../components/home/interactionSection";
 import LocationScreen from "../../components/home/locationScreen";
 import ProfileSection from "../../components/home/profileSection";
+import RoutesScreen from "../../components/home/totalRoutes";
 import WalletScreen from "../../components/home/walletScreen";
 import WeatherScreen from "../../components/home/weatherScreen";
 import { useAuth } from "../context/auth";
@@ -19,9 +20,8 @@ export default function TabOneScreen() {
         <View className="flex-1">
           <WalletScreen />
           <WeatherScreen />
+          <RoutesScreen />
         </View>
-        
-       
       </View>
       <LocationScreen />
     </View>

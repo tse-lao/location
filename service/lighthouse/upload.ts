@@ -33,6 +33,7 @@ export async function uploadFile(address: any | undefined, formResult: any, data
       formData,
       config
     );
+    console.log(response);
     return response.data;
   } catch (err) {
     console.error("Something went wrong when uploading the file");

@@ -1,10 +1,11 @@
 import * as Location from "expo-location";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { SafeAreaView, StyleSheet, View } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import MapView from "react-native-map-clustering";
 import { Marker } from "react-native-maps";
+import { List, SegmentedButtons } from "react-native-paper";
 import LoadingScreen from "../../components/loading/LoadingScreen";
 
 export default function BillBoardMap() {
@@ -117,14 +118,20 @@ export default function BillBoardMap() {
           zIndex: 2,
         }}
       >
-        <TouchableOpacity
-          style={styles.modalButton}
-          onPress={() =>
-            setViewMode((prevMode) => (prevMode === "map" ? "list" : "map"))
-          }
-        >
-          <Text>{viewMode === "map" ? "List" : "Map"}</Text>
-        </TouchableOpacity>
+        <SegmentedButtons
+          value={viewMode}
+          onValueChange={setViewMode}
+          buttons={[
+            {
+              value: "map",
+              label: "Map",
+            },
+            {
+              value: "list",
+              label: "List",
+            },
+          ]}
+        />
       </View>
 
       {viewMode === "map" ? (
@@ -143,24 +150,23 @@ export default function BillBoardMap() {
         </MapView>
       ) : (
         <SafeAreaView style={{ flex: 1, margin: 20, gap: 10 }}>
-          {billboards.map((billboard) => (
-            <TouchableOpacity
-              onPress={() => router.replace(`/locations/${billboard.id}`)}
-            >
-              <View style={styles.item}>
-                <View>
-                  <Text style={styles.locationName}>{billboard.id}</Text>
-                  <Text style={styles.locationDetails}>
-                    Lat: {billboard.longitude}, Lng:{" "}
-                    {billboard.latitude}
-                  </Text>
+          <ScrollView>
+            {billboards.map((billboard:any, index:number) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => router.replace(`/locations/${billboard.id}`)}
+              >
+                <View style={styles.item}>
+                  <List.Item
+                    title="Testing "
+                    description={`Long: ${billboard.longitude}, Lat: ${billboard.latitude}`}
+                    left={(props) => <List.Icon {...props} icon="billboard" />}
+                  
+                  />
                 </View>
-                <Text style={styles.locationDistance}>
-                  {billboard.distance} km
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
         </SafeAreaView>
       )}
     </View>
@@ -197,11 +203,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25, // for shadow on iOS
     shadowRadius: 4, // for shadow on iOS
-  },
-  listItem: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
   },
   label: {
     fontWeight: "bold",

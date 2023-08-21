@@ -25,7 +25,7 @@ export default function ImageDisplay({ images }: { images: string[] }){
 
 const styles = StyleSheet.create({
   container: {
-    height: 200,
+    height: 100,
   }, 
   contentContainer: {
     flexDirection: 'row',

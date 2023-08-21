@@ -1,16 +1,17 @@
 import { router } from 'expo-router';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
-export default function WeatherScreen() {
+export default function RoutesScreen() {
 
   return (
-
     <View style={styles.container}>
-        <IconButton icon="face-man-profile" onPress={() => {router.push("/profile")}} size={24}  />
+        <IconButton icon="map" size={32} onPress={() => {router.push("/routes")}} />
+        <Text>
+            23
+        </Text>
     </View>
-
   )
 }
 

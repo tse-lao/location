@@ -1,25 +1,28 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { List, Text } from "react-native-paper";
 
 export default function InteractionSection() {
   return (
     <View style={styles.container}>
-      <View>
-        <Text style={styles.header}>Connects</Text>
-        <Text style={styles.subHeader}>Last 2w ago</Text>
+      <View style={styles.content}>
+        <Text variant="titleMedium">Interactions</Text>
         <ScrollView style={styles.scrollView}>
-            <Text style={styles.listText}>
-                Here will be a list of connects
-            </Text>
-            <Text style={styles.listText}>
-                Here will be a list of connects
-            </Text>
-            <Text style={styles.listText}>
-                Here will be a list of connects
-            </Text>
-            <Text style={styles.listText}>
-                Here will be a list of connects
-            </Text>
+        <List.Item
+          title="First Item"
+          description="Item description"
+          left={props => <List.Icon {...props} icon="billboard" />}
+        />
+        <List.Item
+          title="First Item"
+          description="Item description"
+          left={props => <List.Icon {...props} icon="shopping" />}
+        />
+        <List.Item
+          title="First Item"
+          description="Item description"
+          left={props => <List.Icon {...props} icon="party-popper" />}
+        />
         </ScrollView>
       </View>
     </View>
@@ -31,7 +34,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 4, // adjusted value to be more suitable for React Native
     padding: 3,
-    flex: 2
+    flex: 2,
+  },
+  content: {
+    padding: 8
   },
   header: {
     fontWeight: '500',  // medium font weight
@@ -42,7 +48,7 @@ const styles = StyleSheet.create({
     color: 'gray'       // gray text color
   },
   scrollView: {
-    height: 200,
+    height: 300,
     marginTop: 4
   },
   listText: {

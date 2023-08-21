@@ -1,33 +1,28 @@
+import { Button, Text, TextInput } from "react-native-paper";
 
+import BottomSheet from "@gorhom/bottom-sheet";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
-import React, { useState } from "react";
-import {
-  Button,
-  Modal,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import MapView, { Marker } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { RlyMumbaiNetwork, getAccountPhrase } from '@rly-network/mobile-sdk';
-import { GsnTransactionDetails } from "@rly-network/mobile-sdk/lib/typescript/gsnClient/utils";
+import { RlyMumbaiNetwork, getAccountPhrase } from "@rly-network/mobile-sdk";
 import { Contract, Wallet, ethers, toBeHex } from "ethers";
-import contractAbi from '../../../assets/abi/billboard.json';
-import ImageScroll from "../../../components/ImageScroll";
-import { useAuth } from '../../context/auth';
+import contractAbi from "../../assets/abi/billboard.json";
+import ImageScroll from "../../components/ImageScroll";
+import { useAuth } from "../context/auth";
 
 export default function CreateBillboard() {
   const [address, setAddress] = useState<any>("");
+  const [text, setText] = React.useState("");
+
   const [status, requestPermission] = ImagePicker.useMediaLibraryPermissions();
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  const {address: account} = useAuth();
+  const { address: account } = useAuth();
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
@@ -105,117 +100,122 @@ export default function CreateBillboard() {
       timestamp: timestamp,
     });
   };
-  
+
   //adding in the ethers expect of calling and interacting with the contract
-  const registerBillboardOnChain =  async () => {
-    setLoading(true)
+  const registerBillboardOnChain = async () => {
+    setLoading(true);
     const providerUrl = `https://polygon-mumbai.infura.io/v3/b382bdce42b544aeafc6fee8c036510f`;
     //get web3 provider
-    
-    const provider = new ethers.JsonRpcProvider(providerUrl)
 
+    const provider = new ethers.JsonRpcProvider(providerUrl);
 
-    const blocknumber = await provider.getBlockNumber()
-    console.log("blocknumber:" + blocknumber)
-    console.log("provider fiund")
-    //get instance of your contract 
-    const CONTRACT = "0x5fFe83913BAB6e69cc48558BF1f68d720a4eDCe4"
-    
+    const blocknumber = await provider.getBlockNumber();
+    console.log("blocknumber:" + blocknumber);
+    console.log("provider fiund");
+    //get instance of your contract
+    const CONTRACT = "0x5fFe83913BAB6e69cc48558BF1f68d720a4eDCe4";
+
     //
     //@ts-ignore
-    const mnemonic = await getAccountPhrase() as any;
+    const mnemonic = (await getAccountPhrase()) as any;
     const wallet = Wallet.fromPhrase(mnemonic) as any;
-    const signer = wallet.connect(provider)
-    
+    const signer = wallet.connect(provider);
+
     console.log(wallet.privateKey);
-    
+
     const data = {
-      "name": "test",
-      "description": "test",
-      "location": location
-    }
+      name: "test",
+      description: "test",
+      location: location,
+    };
     //const result = await uploadFile(signer.address, data, data)
-    console.log(data)
+    console.log(data);
 
-    //get the signer direct;y 
+    //get the signer direct;y
 
-    const myContract =  new Contract(CONTRACT, contractAbi, signer);
-    
+    const myContract = new Contract(CONTRACT, contractAbi, signer);
 
-    
-    console.log("contract found")
-    
+    console.log("contract found");
+
     //populate raw transaction object
-    
+
     const longtitude = 0;
     const latitude = 0;
     const ipfsHash = "";
-    
+
     //@ts-ignore
 
     const tx = await myContract.registerBillboard.populateTransaction(
       longtitude,
-      latitude, 
-        ipfsHash
-      );
-      
-      console.log(tx)
-      
+      latitude,
+      ipfsHash
+    );
 
-      
-      //@ts-ignore
-      const gas = await myContract.registerBillboard.estimateGas(
-        longtitude,
-        latitude, 
-        ipfsHash);
+    console.log(tx);
 
-        console.log(gas)
+    //@ts-ignore
+    const gas = await myContract.registerBillboard.estimateGas(
+      longtitude,
+      latitude,
+      ipfsHash
+    );
+    
+    //lets do this without a provider and register it straight up the network. 
+
+    console.log(gas);
     // get current network fee data
-      const { maxFeePerGas, maxPriorityFeePerGas } = await provider.getFeeData();
-      
-      console.log(maxFeePerGas)
-      console.log(maxPriorityFeePerGas)
-      console.log(gas)
-      
-      console.log("fee data found")
-    
+    const { maxFeePerGas, maxPriorityFeePerGas } = await provider.getFeeData();
+
+    console.log(maxFeePerGas);
+    console.log(maxPriorityFeePerGas);
+    console.log(gas);
+
+    console.log("fee data found");
+
     //create relay tx object
-    
-    //singer 
-    
 
+    //singer
 
-      const gsnTx = {
-        from: signer.address,
-        data: tx.data,
-        to: tx.to,
-        gas: toBeHex(gas),
-        //@ts-ignore
-        maxFeePerGas: toBeHex(maxFeePerGas), 
-        //@ts-ignore
-        maxPriorityFeePerGas: toBeHex(maxPriorityFeePerGas),
-      } as GsnTransactionDetails;
-    
-      console.log(gsnTx)
-    // relay transaction 
-    console.log("relay transaction")
-    try{
+    const gsnTx = {
+      from: signer.address,
+      data: tx.data,
+      to: tx.to,
+      gas: toBeHex(gas),
       //@ts-ignore
-      
-      const rlyNetwork: Network = RlyMumbaiNetwork;
+      maxFeePerGas: toBeHex(maxFeePerGas),
+      //@ts-ignore
+      maxPriorityFeePerGas: toBeHex(maxPriorityFeePerGas),
+    } as any;
 
-      rlyNetwork.setApiKey("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjEwMX0.h1avIemeKU-1Xbjp7nkdhF1-59C6jY4Im3GBiQa6OP0F3v3j-8fVQI2Fbu703H5mSYX52sGCAg8VcpCfjY5zLg")
+    console.log(gsnTx);
+    // relay transaction
+    console.log("relay transaction");
+    try {
+      //@ts-ignore
+
+      const rlyNetwork: any = RlyMumbaiNetwork;
+
+      rlyNetwork.setApiKey(
+        "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOjEwMX0.h1avIemeKU-1Xbjp7nkdhF1-59C6jY4Im3GBiQa6OP0F3v3j-8fVQI2Fbu703H5mSYX52sGCAg8VcpCfjY5zLg"
+      );
       await rlyNetwork.relay(gsnTx);
-
-    }catch(e){
-      console.log(e)
+    } catch (e) {
+      console.log(e);
     }
-    
-    
-    console.log("finished transaction")
-    setLoading(false)
-    
-  }
+
+    console.log("finished transaction");
+    setLoading(false);
+  };
+  const bottomSheetRef = useRef<BottomSheet>(null);
+
+  // variables
+  const snapPoints = useMemo(() => ["10%", "60%"], []);
+
+  // callbacks
+  const handleSheetChanges = useCallback((index: number) => {
+    console.log("handleSheetChanges", index);
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <MapView
@@ -226,17 +226,17 @@ export default function CreateBillboard() {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
-        
-
       >
-        
-        <Marker coordinate={{
-                            latitude: location.latitude,
-                            longitude: location.longitude
-                        }}
-                            draggable
-                            onDragEnd={(e) => { changeLocation(e.nativeEvent.coordinate) }}
-                        />
+        <Marker
+          coordinate={{
+            latitude: location.latitude,
+            longitude: location.longitude,
+          }}
+          draggable
+          onDragEnd={(e) => {
+            changeLocation(e.nativeEvent.coordinate);
+          }}
+        />
       </MapView>
 
       <View style={styles.searchBar}>
@@ -251,7 +251,7 @@ export default function CreateBillboard() {
             setAddress(text);
           }}
         />
-       
+
         <TouchableOpacity
           onPress={() => {
             findLocation(address);
@@ -261,58 +261,44 @@ export default function CreateBillboard() {
         </TouchableOpacity>
       </View>
 
-      {!modalVisible && (
-        <View
-          style={{
-            position: "absolute",
-            bottom: 50,
-            left: "25%",
-            width: "50%",
-            zIndex: 2,
-          }}
-        >
-          <TouchableOpacity style={styles.modalButton} onPress={toggleModal}>
-            <Text>Show Modal</Text>
-          </TouchableOpacity>
-        </View>
-      )}
 
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={1}
+        snapPoints={snapPoints}
+        onChange={handleSheetChanges}
       >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <ScrollView>
-              {/* Add your fields here */}
-              <TextInput placeholder="Field 1" style={styles.modalInput} />
-              <TextInput placeholder="Field 2" style={styles.modalInput} />
-              {/* Add more fields as required */}
-            </ScrollView>
-            <ImageScroll
-              images={images}
-              onAddImage={handleAddImage}
-              deleteImage={deleteImage}
-            />
-            
-            <Button 
-          title={loading ? "loading..." : "Register Billboard"}
-          onPress={registerBillboardOnChain}
-          disabled={loading}
+        <View style={styles.contentContainer}>
+        <Text variant="headlineSmall">Create Billboard</Text>
+
+          <TextInput
+            label="Name"
+            placeholder="Name"
+            style={styles.modalInput}
+            onChangeText={(text) => setText(text)}
           />
-            <TouchableOpacity
-              style={{ ...styles.modalButton, backgroundColor: "#2196F3" }}
-              onPress={toggleModal}
-            >
-              <Text style={styles.textStyle}>Hide Modal</Text>
-            </TouchableOpacity>
-          </View>
+          <TextInput
+            label="description"
+            placeholder="Description"
+            style={styles.modalInput}
+            onChangeText={(text) => setText(text)}
+          />
+
+          <ImageScroll
+            images={images}
+            onAddImage={handleAddImage}
+            deleteImage={deleteImage}
+          />
+
+          <Button
+            mode="contained"
+            onPress={registerBillboardOnChain}
+            disabled={loading}
+          >
+            {loading ? "loading..." : "Register Billboard"}
+          </Button>
         </View>
-      </Modal>
+      </BottomSheet>
     </SafeAreaView>
   );
 }
@@ -356,6 +342,11 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25, // for shadow on iOS
     shadowRadius: 4, // for shadow on iOS
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: "center",
+    padding: 24,
   },
   searchInput: {
     width: "80%",

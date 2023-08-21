@@ -1,17 +1,34 @@
-import { Wallet } from 'lucide-react-native';
+import { router } from 'expo-router';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { IconButton } from 'react-native-paper';
 import { useAuth } from '../../app/context/auth';
 
 export default function WalletScreen() {
     const {user} = useAuth() as any;
 
   return (
-    <View className="bg-white rounded-md p-3 flex flex-col gap-1 mb-4">
-        <Wallet size={32} color='black' />
-        <Text className="text-xl font-semibold">
+    <View style={styles.container}>
+      <IconButton icon="wallet" size={32} onPress={() => {router.push('/profile/transactions')}} />
+
+        <Text>
             {user?.balance}
         </Text>
     </View>
   )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: "white",
+        gap: 10,
+        borderRadius: 8,
+        paddingHorizontal: 24,
+        alignContent: 'center',
+        justifyContent: 'center',
+        paddingVertical: 12,
+        flexDirection: 'column',
+    },
+  });
+  
+  

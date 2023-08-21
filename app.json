@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "locations",
-    "slug": "locations",
+    "slug": "billboard-locations",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -42,14 +42,15 @@
         "origin": false
       },
       "eas": {
-        "projectId": "a17fee85-54c2-4c78-a5e8-511392adb3a4"
+        "projectId": "a94b543e-cae4-4456-9df9-a90f5d6550fd"
       }
     },
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/a17fee85-54c2-4c78-a5e8-511392adb3a4"
-    }
+      "url": "https://u.expo.dev/a94b543e-cae4-4456-9df9-a90f5d6550fd"
+    },
+    "owner": "koenschuite"
   }
 }

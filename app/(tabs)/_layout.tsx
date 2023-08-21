@@ -1,6 +1,7 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
 import { Pressable, useColorScheme } from 'react-native';
+// @ts-ignore
 import { TextDecoder, TextEncoder } from 'text-encoding';
 import Colors from '../../constants/Colors';
 
@@ -25,6 +26,8 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarInactiveBackgroundColor: "#f3f4f6",
+        tabBarActiveBackgroundColor: "#f3f4f6",
       }}>
       <Tabs.Screen
         name="index"

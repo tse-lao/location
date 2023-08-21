@@ -9,8 +9,8 @@ import { useFonts } from "expo-font";
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from "react";
 import { useColorScheme } from "react-native";
+import { PaperProvider } from 'react-native-paper';
 import { Provider, useAuth } from "./context/auth";
-import "./global.css";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -50,9 +50,11 @@ export default function RootLayout() {
   }
 
   return (
+    <PaperProvider>
     <Provider>
       <RootLayoutNav />
     </Provider>
+    </PaperProvider>
   );
 }
 
