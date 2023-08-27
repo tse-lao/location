@@ -1,9 +1,10 @@
 
   
   import { ethers } from "ethers";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, View } from "react-native";
-import { List, Text } from "react-native-paper";
+import { View } from "react-native";
+import { IconButton, List, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/auth";
 
@@ -58,10 +59,18 @@ export default function ProfileSettings() {
           alignItems: "center",
         }}
       >
-        <Text>
-            
-            {loading ? <ActivityIndicator size="large" color="#00ff00" />: "Update Data Profile"}
-        </Text>
+         <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          gap: 32,
+          alignItems: "center",
+        }}
+      >
+        <IconButton icon="backburger" size={20} onPress={() => router.back()} />
+        <Text>Profile Settings</Text>
+      </View>
+        
         {transactions.length > 0 && transactions.map((transaction: any) => (
             <List.Item
             title={transaction.from}

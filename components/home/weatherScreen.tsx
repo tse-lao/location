@@ -8,7 +8,7 @@ export default function WeatherScreen() {
   return (
 
     <View style={styles.container}>
-        <IconButton icon="face-man-profile" onPress={() => {router.push("/profile")}} size={24}  />
+        <IconButton icon="face-man-profile" iconColor='#87eeab' onPress={() => {router.push("/profile")}} size={24}  />
     </View>
 
   )
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         gap: 10,
         borderRadius: 8,
-        paddingHorizontal: 24,
+        paddingHorizontal: 12,
         marginTop: 12, 
         alignContent: 'center',
         justifyContent: 'center',

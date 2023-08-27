@@ -16,7 +16,7 @@ export default function ImageDisplay({ images }: { images: string[] }){
 
         
         key={index} onPress={() => setIsFullscreen(!isFullscreen)}>
-          <Image source={{ uri: image }} style={isFullscreen ? styles.fullscreenImage : styles.image} />
+          <Image source={{ uri: image }} style={isFullscreen ? styles.fullImage : styles.image} />
         </TouchableOpacity>
       ))}
     </ScrollView>
@@ -24,8 +24,7 @@ export default function ImageDisplay({ images }: { images: string[] }){
 };
 
 const styles = StyleSheet.create({
-  container: {
-    height: 100,
+  container: { 
   }, 
   contentContainer: {
     flexDirection: 'row',
@@ -37,7 +36,6 @@ const styles = StyleSheet.create({
     left: 0,
     width: windowWidth,
     height: windowHeight,
-    backgroundColor: '#000',
     zIndex: 10000,
   },
   fullscreenImage: {
@@ -64,8 +62,16 @@ const styles = StyleSheet.create({
     margin: 5,
   },
   image: {
-    width: 100,
-    height: 100,
+    position: 'relative',
+    width: 200,
+    height: 200,
+    borderRadius: 5,
+    borderWidth: 2, 
+  },
+  fullImage: {
+    position: 'relative',
+    width: windowWidth,
+    height: windowHeight,
   },
 });
 

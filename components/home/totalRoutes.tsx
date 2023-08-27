@@ -1,16 +1,13 @@
 import { router } from 'expo-router';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
 export default function RoutesScreen() {
 
   return (
     <View style={styles.container}>
-        <IconButton icon="map" size={32} onPress={() => {router.push("/routes")}} />
-        <Text>
-            23
-        </Text>
+        <IconButton icon="map" size={32} iconColor='#87eeab' onPress={() => {router.push("/routes")}} />
+
     </View>
   )
 }
@@ -20,7 +17,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         gap: 10,
         borderRadius: 8,
-        paddingHorizontal: 24,
+        paddingHorizontal: 12,
         marginTop: 12, 
         alignContent: 'center',
         justifyContent: 'center',

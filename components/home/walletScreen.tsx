@@ -1,6 +1,5 @@
 import { router } from 'expo-router';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { useAuth } from '../../app/context/auth';
 
@@ -9,11 +8,7 @@ export default function WalletScreen() {
 
   return (
     <View style={styles.container}>
-      <IconButton icon="wallet" size={32} onPress={() => {router.push('/profile/transactions')}} />
-
-        <Text>
-            {user?.balance}
-        </Text>
+      <IconButton icon="wallet" size={32} iconColor='#87eeab' onPress={() => {router.push('/profile/transactions')}} />
     </View>
   )
 }
@@ -21,9 +16,9 @@ export default function WalletScreen() {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: "white",
-        gap: 10,
+        gap: 4,
         borderRadius: 8,
-        paddingHorizontal: 24,
+        paddingHorizontal:12,
         alignContent: 'center',
         justifyContent: 'center',
         paddingVertical: 12,

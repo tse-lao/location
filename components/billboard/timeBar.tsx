@@ -2,9 +2,17 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-const Timebar = ({ startDate, endDate }: {startDate: any, endDate: any}) => {
+const Timebar = () => {
   const [timeRemaining, setTimeRemaining] = useState('');
   const [progress, setProgress] = useState(0);
+
+  // Set startDate to the start of the current day
+  const startDate = new Date();
+  startDate.setHours(0, 0, 0, 0);
+
+  // Set endDate to the end of the current day
+  const endDate = new Date();
+  endDate.setHours(23, 59, 59, 999);
 
   useEffect(() => {
     const calculateTimeRemaining = () => {
@@ -17,7 +25,7 @@ const Timebar = ({ startDate, endDate }: {startDate: any, endDate: any}) => {
         const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
 
-        setTimeRemaining(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+        setTimeRemaining(`${hours}h  ${minutes}m ${seconds}s`);
         setProgress(1 - timeDifference / totalTime);
       } else {
         setTimeRemaining('Time Expired');
@@ -30,19 +38,14 @@ const Timebar = ({ startDate, endDate }: {startDate: any, endDate: any}) => {
     return () => {
       clearInterval(timer);
     };
-  }, [startDate, endDate]);
+  }, []);  // Empty dependency array as startDate and endDate are constants within the component
 
   return (
     <View style={styles.container}>
-      <View style={styles.dateContainer}>
-        <Text style={styles.dateText}>Start: {startDate.toISOString().slice(0, 10)}</Text>
-        <Text style={styles.dateText}>End: {endDate.toISOString().slice(0, 10)}</Text>
-      </View>
       <View style={styles.progressBarBackground}>
         <View style={[styles.progressBarFill, { width: `${progress * 100}%` }]} />
       </View>
       <Text style={styles.timeRemainingText}>Remaining: {timeRemaining}</Text>
-
     </View>
   );
 };
@@ -61,6 +64,7 @@ const styles = StyleSheet.create({
   },
   timeRemainingText: {
     marginTop: 5, 
+    textAlign: 'right',
     fontSize: 14,
   },
   progressBarBackground: {

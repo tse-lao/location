@@ -5,7 +5,7 @@ import { SafeAreaView, StyleSheet, View } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import MapView from "react-native-map-clustering";
 import { Marker } from "react-native-maps";
-import { List, SegmentedButtons } from "react-native-paper";
+import { List, SegmentedButtons, Text } from "react-native-paper";
 import LoadingScreen from "../../components/loading/LoadingScreen";
 
 export default function BillBoardMap() {
@@ -41,9 +41,11 @@ export default function BillBoardMap() {
 
   useEffect(() => {
     async function fetchBillboards() {
+      const contract = "0xde7CE46b24936dfE294bBE4c6E3596Bc8Ee9dA81";
       try {
-        const result = await fetch("https://api.dataponte.com/billboard/all");
+        const result = await fetch(`https://api.dataponte.com/billboard/pending/${contract}`);
         const response = await result.json();
+
         console.log("response", response);
         if (Array.isArray(response) && response.length > 0) {
           setBillboards(response);
@@ -59,6 +61,7 @@ export default function BillBoardMap() {
   }, []);
 
   useEffect(() => {
+
     addDistanceToMe(billboards);
   }, [location]);
 
@@ -67,8 +70,8 @@ export default function BillBoardMap() {
       const distanceInKm = distance(
         location.latitude,
         location.longitude,
-        billboard.latitude,
-        billboard.longitude
+        billboard.coordinates.lat,
+        billboard.coordinates.long
       );
       return {
         ...billboard,
@@ -140,8 +143,8 @@ export default function BillBoardMap() {
             <Marker
               key="1"
               coordinate={{
-                latitude: billboard.latitude / 10000,
-                longitude: billboard.longitude / 100000, // Corrected here
+                latitude: billboard.coordinates.lat,
+                longitude: billboard.coordinates.long, // Corrected here
               }}
               title={billboard.city}
               description={billboard.full_address}
@@ -154,16 +157,18 @@ export default function BillBoardMap() {
             {billboards.map((billboard:any, index:number) => (
               <TouchableOpacity
                 key={index}
-                onPress={() => router.replace(`/locations/${billboard.id}`)}
+                onPress={() => router.replace(`/locations/${billboard.billboardAddress}`)}
               >
-                <View style={styles.item}>
+
                   <List.Item
-                    title="Testing "
-                    description={`Long: ${billboard.longitude}, Lat: ${billboard.latitude}`}
+                    title={billboard.name}
+                    style={styles.item}
+                    description={`Long: ${billboard.coordinates.long}, Lat: ${billboard.coordinates.lat}`}
                     left={(props) => <List.Icon {...props} icon="billboard" />}
+                    right={(props) => <Text> {billboard?.distance} km</Text>}
                   
                   />
-                </View>
+
               </TouchableOpacity>
             ))}
           </ScrollView>

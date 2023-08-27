@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { BlurView } from 'expo-blur';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
 import { useAuth } from '../../app/context/auth';
 import profileAbi from '../../assets/abi/profile.json';

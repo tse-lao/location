@@ -6,7 +6,7 @@ import MapView, { Polyline } from 'react-native-maps';
 import { FAB, Portal } from 'react-native-paper';
 import LoadingScreen from '../../components/loading/LoadingScreen';
 import SelectRoute from '../../components/routes/SelectRoutes';
-
+import formattedRoutes from '../../components/routes/walkingRoutes';
 
 
 export default function MapRoutes() {
@@ -57,7 +57,7 @@ const getUserLocation = async () => {
   }, []);
   
   useEffect(() => {
-    const routeData = routes[route];
+    const routeData = formattedRoutes[route];
     parseRouteData(routeData.data);
   }, [route]);
   
@@ -132,7 +132,7 @@ const getUserLocation = async () => {
 }
 
 
-const routes = [
+const oldRoutes = [
     {
         "route": "Route 1",
         "data": [
