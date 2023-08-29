@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const SelectRoute = ({ onRouteSelect }: { onRouteSelect: any }) => {
+const SelectRoute = ({ routes, onRouteSelect }: { routes:any, onRouteSelect: any }) => {
   const [selectedRoute, setSelectedRoute] = useState("");
   const [dropDown, setDropDown] = useState(false);
 
-  const routes = [
+ /*  const routes = [
     { name: "Route 1", value: 0 },
     { name: "Route 2", value: 1 },
     { name: "Route 3", value: 2 },
-  ];
+  ]; */
 
   const handleRouteSelect = (routeName: any) => {
     setSelectedRoute(routeName);
@@ -25,14 +25,14 @@ const SelectRoute = ({ onRouteSelect }: { onRouteSelect: any }) => {
       </TouchableOpacity>
       {dropDown && (
         <ScrollView style={styles.dropdown}>
-          {routes.map((route, index) => (
+          {routes.map((route:any, index:number) => (
             <Text
               key={index}
               style={[
                 styles.routeItem,
                 selectedRoute === route.name && styles.selectedRouteItem,
               ]}
-              onPress={() => handleRouteSelect(route.value)}
+              onPress={() => handleRouteSelect(index)}
             >
               {route.name}
             </Text>

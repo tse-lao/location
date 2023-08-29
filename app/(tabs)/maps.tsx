@@ -1,7 +1,7 @@
 import * as Location from "expo-location";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, View } from "react-native";
+import { Image, SafeAreaView, StyleSheet, View } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import MapView from "react-native-map-clustering";
 import { Marker } from "react-native-maps";
@@ -34,6 +34,13 @@ export default function BillBoardMap() {
           latitude: getLoc.coords.latitude,
           longitude: getLoc.coords.longitude,
         });
+
+        //NOTE: added this to position to location of initRegion in with the current location centered...
+        setInitRegion({
+          ...initRegion,
+          longitude: getLoc.coords.longtitude,
+          latitude: getLoc.coords.latitude,
+        });
       }
     }
     requestLocation();
@@ -43,7 +50,9 @@ export default function BillBoardMap() {
     async function fetchBillboards() {
       const contract = "0xde7CE46b24936dfE294bBE4c6E3596Bc8Ee9dA81";
       try {
-        const result = await fetch(`https://api.dataponte.com/billboard/pending/${contract}`);
+        const result = await fetch(
+          `https://api.dataponte.com/billboard/pending/${contract}`
+        );
         const response = await result.json();
 
         console.log("response", response);
@@ -61,9 +70,10 @@ export default function BillBoardMap() {
   }, []);
 
   useEffect(() => {
-
-    addDistanceToMe(billboards);
-  }, [location]);
+    if (location && billboards.length > 0) {
+      addDistanceToMe(billboards);
+    }
+  }, [location, billboards]);
 
   const addDistanceToMe = (billies: any[]) => {
     const updateBillboards = billies.map((billboard) => {
@@ -115,7 +125,7 @@ export default function BillBoardMap() {
       <View
         style={{
           position: "absolute",
-          bottom: 50,
+          bottom: 45,
           left: "25%",
           width: "50%",
           zIndex: 2,
@@ -154,21 +164,33 @@ export default function BillBoardMap() {
       ) : (
         <SafeAreaView style={{ flex: 1, margin: 20, gap: 10 }}>
           <ScrollView>
-            {billboards.map((billboard:any, index:number) => (
+            {billboards.map((billboard: any, index: number) => (
               <TouchableOpacity
                 key={index}
-                onPress={() => router.replace(`/locations/${billboard.billboardAddress}`)}
+                onPress={() =>
+                  router.replace(`/locations/${billboard.billboardAddress}`)
+                }
               >
-
-                  <List.Item
-                    title={billboard.name}
-                    style={styles.item}
-                    description={`Long: ${billboard.coordinates.long}, Lat: ${billboard.coordinates.lat}`}
-                    left={(props) => <List.Icon {...props} icon="billboard" />}
-                    right={(props) => <Text> {billboard?.distance} km</Text>}
-                  
-                  />
-
+                <List.Item
+                  title={billboard.name}
+                  style={styles.item}
+                  description={`${billboard.owner}`}
+                  left={(props) => (
+                    <Image
+                      source={{
+                        uri:
+                          "https://ipfs.io/ipfs/" +
+                          billboard.adDetails.adContent
+                            ? billboard.adDetails.adContent
+                            : "bafkreihvqgz6vt5pqajpdi4pdguhfu4pf7owpy65c6kdfvck2pfbgi7vqm",
+                      }}
+                      style={styles.image}
+                    />
+                  )}
+                  right={(props) => (
+                    <Text {...props}> {billboard?.distance} km</Text>
+                  )}
+                />
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -193,6 +215,11 @@ const styles = StyleSheet.create({
   clusterText: {
     color: "#FFFFFF",
     fontSize: 14,
+  },
+  image: {
+    height: 64,
+    width: 64,
+    borderRadius: 8,
   },
   modalButton: {
     padding: 10,

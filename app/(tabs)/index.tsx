@@ -6,11 +6,10 @@ import ProfileSection from "../../components/home/profileSection";
 import RoutesScreen from "../../components/home/totalRoutes";
 import WalletScreen from "../../components/home/walletScreen";
 import WeatherScreen from "../../components/home/weatherScreen";
-import { useAuth } from "../context/auth";
 
 
 export default function TabOneScreen() {
-  const { user } = useAuth() as any;
+
   return (
     <View style={styles.container}>
       <ProfileSection />

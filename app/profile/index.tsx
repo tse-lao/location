@@ -6,6 +6,8 @@ import { View } from "react-native";
 import { Button, IconButton, Text, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import profileAbi from "../../assets/abi/profile.json";
+import { generateApiKey, generateJWT } from "../../service/lighthouse";
+import { uploadFile } from "../../service/lighthouse/upload";
 import { useAuth } from "../context/auth";
 
 export default function ProfileSettings() {
@@ -78,8 +80,9 @@ export default function ProfileSettings() {
       income: income,
       city: city,
     };
-    //const hash = await uploadFile(user.address, formData, "profile-update");
-const hash = "QmQiqhdyimn1uAuNqvrByJ9PTgvaCr31U5LpbNSsVHeoZM";
+
+    const hash = await uploadFile(user.address, formData, "profile-update");
+//const hash = "QmQiqhdyimn1uAuNqvrByJ9PTgvaCr31U5LpbNSsVHeoZM";
     console.log(hash); //returns the ipfs hash of the file
 
     //now we want to update the profile contract with the ipfs hash of the file
@@ -165,27 +168,34 @@ const hash = "QmQiqhdyimn1uAuNqvrByJ9PTgvaCr31U5LpbNSsVHeoZM";
 
     //based on the assumption
   };
+  
+  const updateJWT = async () => {
+    console.log("updating jwt");
+    generateJWT();
+    generateApiKey();
+  }
 
+  // NOTE: the spacing of the header.. 
   return (
     <SafeAreaView
       style={{
         display: "flex",
         flexDirection: "column",
         gap: 16,
-        marginVertical: 24,
         padding: 24,
+        
       }}
     >
       <View
         style={{
           display: "flex",
           flexDirection: "row",
-          gap: 32,
-          alignItems: "center",
+          gap: 16,
+
         }}
       >
         <IconButton icon="backburger" size={20} onPress={() => router.back()} />
-        <Text>Profile Settings</Text>
+        <Text style={{fontWeight: '500'}}>Profile Settings</Text>
       </View>
       <TextInput
         label="Username"
@@ -221,8 +231,16 @@ const hash = "QmQiqhdyimn1uAuNqvrByJ9PTgvaCr31U5LpbNSsVHeoZM";
         {loading ? "loading.." : "Update Data Profile"}
       </Button>
       <Text>
-        {useRelayer ? "Using relayer" : "Directly updating the contract"}
+        {useRelayer ? "√ Using relayer" : "Directly updating the contract"}
       </Text>
+   {/*    <Button
+        icon="refresh"
+        mode="contained"
+        onPress={updateJWT}
+        disabled={loading}
+      >
+        Update JWT Token
+      </Button> */}
     </SafeAreaView>
   );
 }

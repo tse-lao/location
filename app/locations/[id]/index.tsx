@@ -43,20 +43,11 @@ export default function DetailBoard() {
    }
   }, [id])
   
-  //get ther start date as today at 0:00:000
-  // and day tomorrowe at 0:00:000
-  const today = new Date().setHours(0, 0, 0, 0);
-  const tomorrow = new Date().setHours(24, 0, 0, 0);
   
-
-  const startDate = new Date("2023-08-26T00:00:00");
-  const endDate = new Date("2023-08-27T00:00:00");
-
-  //implement the ads logic in here aswel..
   
   
   let images = [
-    "https://images.unsplash.com/photo-1560196327-cca0a731441b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=987&q=80",
+    "https://ipfs.io/ipfs/bafkreihvqgz6vt5pqajpdi4pdguhfu4pf7owpy65c6kdfvck2pfbgi7vqm",
   ];
 
   if (loading) return <LoadingScreen />

@@ -36,11 +36,7 @@ export default function ProfileSettings() {
     }
   }, [user]);
 
-
-
-  //TODO: implement the logic for updating the user profile data
-
-
+  
   return (
     <SafeAreaView
       style={{
